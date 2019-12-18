@@ -5,9 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
+    <style>
+        h1{
+            color:red;
+            background-color: black;
+        }
+        p{
+            color: white;
+            background-color: black;
+        }
+        .big{
+            font-size: 50px;
+        }
+        #dream{
+            font-size:5px;
+        }
+
+    </style>
 </head>
 <body>
     <h1>저는 양시영입니다.</h1>
-    <p>저는 김해 출신이고 현 거주지는 서울입니다.</p>
+    <p class="big">저는 김해 출신이고 현 거주지는 서울입니다.</p>
+    <p id="dream">제 꿈은 회사에 꼭 필요한 트러블슈터입니다.</p>
+    <div class="big">일단 한번 써봄</div>
+    <button id="btn">알림창 표시</button>
+    <script>
+        const btn = document.querySelector('#btn');
+        btn.addEventListener('click',function(){
+            alert('나를 클릭하셨군요?');
+        })
+    </script>
 </body>
 </html>
