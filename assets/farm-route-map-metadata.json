@@ -1,0 +1,73 @@
+{
+  "source_repository": "Robot3FinalProject/main",
+  "commit": "399379087374f9982b177e70d68e11721d5fdaaf",
+  "map_file": "farm_project/sim/ros_ws/src/farm_sim_config/maps/hcr_farm_map.yaml",
+  "origin": [
+    -8.075000381469726,
+    -15.075000381469726
+  ],
+  "resolution_m_per_pixel": 0.05,
+  "image_width": 323,
+  "image_height": 603,
+  "visual_rotation_clockwise_degrees": 90,
+  "display_north": "right",
+  "kind": "saved occupancy map with planned route graph; not executed trajectory",
+  "routes": {
+    "scout": {
+      "nodes": 211,
+      "directed_edges": 452,
+      "visual_undirected_lines": 226
+    },
+    "harvest": {
+      "nodes": 143,
+      "directed_edges": 260,
+      "visual_undirected_lines": 162
+    },
+    "transport": {
+      "nodes": 143,
+      "directed_edges": 324,
+      "visual_undirected_lines": 162
+    }
+  },
+  "stations": {
+    "scout_01": {
+      "station_id": "STATION_SCOUT_01",
+      "node_id": 8001,
+      "xy_m": [
+        -5.0,
+        13.25
+      ],
+      "yaw_rad": -1.5707963267948966
+    },
+    "harvest_01": {
+      "station_id": "STATION_HARVEST_01",
+      "node_id": 8002,
+      "xy_m": [
+        -2.0,
+        13.25
+      ],
+      "yaw_rad": -1.5707963267948966
+    },
+    "transport_01": {
+      "station_id": "STATION_TRANSPORT_01",
+      "node_id": 8003,
+      "xy_m": [
+        2.0,
+        13.25
+      ],
+      "yaw_rad": -1.5707963267948966,
+      "status": "CONFIGURED",
+      "source": "transport_graph edge 30513 (8003 to 9014); forward station exit"
+    },
+    "sorting_station": {
+      "node_id": 8004,
+      "xy_m": [
+        -7.0,
+        13.25
+      ],
+      "yaw_rad": 1.5707963267948966,
+      "status": "CONFIGURED",
+      "source": "USD sorter (-7,14) intake faces south; user-approved approach via north corridor 9001"
+    }
+  }
+}
