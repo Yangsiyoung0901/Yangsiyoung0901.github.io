@@ -1,5 +1,19 @@
 import './capture-viewer.js';
 import { details } from './project-details.js';
+const projectVideos = {
+  plc: [
+    ['assets/videos/mps-plc-demo-1.mp4', 'MPS PLC 시연 영상 1'],
+    ['assets/videos/mps-plc-demo-2.mp4', 'MPS PLC 시연 영상 2'],
+    ['assets/videos/mps-plc-demo-3.mp4', 'MPS PLC 시연 영상 3']
+  ],
+  safeeye: [['assets/videos/ondeviceai-demo.mp4', 'SafeEye · OnDeviceAI 시연 영상']]
+};
+function renderProjectVideos(project) {
+  const videos = projectVideos[project];
+  if (!videos) return '';
+  return '<section class="case-step"><div class="step-label">DEMONSTRATION <small>프로젝트 시연 영상</small></div>' +
+    videos.map(([src, title]) => `<figure class="detail-figure"><video controls playsinline preload="none" aria-label="${title}" style="display:block;width:100%;max-height:480px;border-radius:8px;background:#080e05"><source src="${src}" type="video/mp4">이 브라우저에서는 영상을 재생할 수 없습니다. <a href="${src}">영상 열기</a></video><figcaption>${title} · <a href="${src}" target="_blank" rel="noopener">새 창에서 보기 ↗</a></figcaption></figure>`).join('') + '</section>';
+}
 const tabs=[...document.querySelectorAll('[data-tab]')];
 function selectTab(tab){if(tab.dataset.tab!=='navigation')document.querySelectorAll('#capture-viewer video').forEach(v=>v.pause());tabs.forEach(t=>{const active=t===tab;t.setAttribute('aria-selected',active);t.tabIndex=active?0:-1;document.getElementById('panel-'+t.dataset.tab).hidden=!active;});}
 tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectTab(tab));tab.addEventListener('keydown',e=>{let n;if(e.key==='ArrowRight')n=(i+1)%tabs.length;else if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')n=0;else if(e.key==='End')n=tabs.length-1;else return;e.preventDefault();selectTab(tabs[n]);tabs[n].focus();});});
@@ -7,12 +21,12 @@ document.querySelectorAll('[data-issue]').forEach(b=>b.addEventListener('click',
 const dialog=document.getElementById('case-dialog'),lightbox=document.getElementById('lightbox');
 function lock(){document.body.classList.toggle('body-locked',Boolean(document.querySelector('dialog[open]')));}
 function openDialog(content){document.getElementById('dialog-body').innerHTML=content;dialog.showModal();dialog.scrollTop=0;lock();}
-document.addEventListener('click',e=>{const p=e.target.closest('[data-project]');if(p){const d=details[p.dataset.project];if(!d)return;openDialog(`<header class="dialog-head"><div class="section-kicker">${d.eyebrow}</div><h2 id="dialog-title">${d.title}</h2><div class="tags">${d.tags.map(t=>`<span>${t}</span>`).join('')}</div></header><figure class="dialog-hero"><button class="zoom" data-zoom="${d.image}" data-caption="${d.caption}"><img src="${d.image}" alt="${d.caption}"></button><figcaption>${d.caption}</figcaption></figure><div class="dialog-content">${d.html}</div>`);}
+document.addEventListener('click',e=>{const p=e.target.closest('[data-project]');if(p){const d=details[p.dataset.project];if(!d)return;openDialog(`<header class="dialog-head"><div class="section-kicker">${d.eyebrow}</div><h2 id="dialog-title">${d.title}</h2><div class="tags">${d.tags.map(t=>`<span>${t}</span>`).join('')}</div></header><figure class="dialog-hero"><button class="zoom" data-zoom="${d.image}" data-caption="${d.caption}"><img src="${d.image}" alt="${d.caption}"></button><figcaption>${d.caption}</figcaption></figure><div class="dialog-content">${renderProjectVideos(p.dataset.project)}${d.html}</div>`);}
 const z=e.target.closest('[data-zoom]');if(z){const img=document.getElementById('lightbox-image');img.src=z.dataset.zoom||z.currentSrc||z.src;img.alt=z.dataset.caption||z.alt||z.querySelector('img')?.alt||'프로젝트 이미지';document.getElementById('lightbox-caption').textContent=img.alt;lightbox.showModal();lock();}
 if(e.target.closest('[data-close]'))e.target.closest('dialog').close();
 if(e.target.closest('[data-top]'))window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
 if(e.target.closest('[data-sources]'))openDialog(`<header class="dialog-head"><div class="section-kicker">EVIDENCE & SCOPE</div><h2 id="dialog-title">검증 조건과 자료 근거</h2></header><div class="dialog-content source-list"><p>스마트팜은 GitHub main / 3993790(2026.10.30)을 기준으로 구성했습니다. 성능 수치는 각 날짜의 시험 기록이며, 최신 전체 사이클을 새로 측정한 결과가 아닙니다.</p><a href="https://github.com/Robot3FinalProject/main/blob/399379087374f9982b177e70d68e11721d5fdaaf/farm_project/docs/PROJECT_STATE.md" target="_blank" rel="noopener">공통 주행·카메라 최적화 상태 및 시험 기록 ↗</a><a href="https://github.com/Robot3FinalProject/main/blob/399379087374f9982b177e70d68e11721d5fdaaf/farm_project/sim/docs/changes/PARALLEL_APPROACH_FIX_20261023.md" target="_blank" rel="noopener">짧은 작업 구간 수정·실행 결과 ↗</a><a href="https://github.com/Robot3FinalProject/main/blob/399379087374f9982b177e70d68e11721d5fdaaf/farm_project/sim/docs/changes/DRIVE_PERFORMANCE_20261014.json" target="_blank" rel="noopener">물리 처리 방식 성능 비교 ↗</a><p>다른 프로젝트의 역할·기간·수치는 제공 자료를 따릅니다. STM32 응답 지연은 추정값, PLC 순차 시간은 이론값, SafeEye FPS는 PC 평가값입니다. 실제 장면 이미지는 제공 자료에서 추출했습니다.</p></div>`);
 });
-document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('close',lock);d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();});});
+document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('close',()=>{d.querySelectorAll('video').forEach(v=>v.pause());lock();});d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();});});
 
 document.querySelectorAll('[data-map]').forEach(b=>b.addEventListener('click',()=>{const scope=b.closest('.map-section');scope.querySelectorAll('[data-map]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',x===b);});const file='assets/farm-route-map'+(b.dataset.map==='all'?'':'-'+b.dataset.map)+'.svg';const zoom=scope.querySelector('.zoom');zoom.dataset.zoom=file;zoom.querySelector('img').src=file;}));
