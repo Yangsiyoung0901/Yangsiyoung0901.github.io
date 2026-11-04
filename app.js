@@ -15,7 +15,7 @@ function renderProjectVideos(project) {
     videos.map(([src, title]) => `<figure class="detail-figure"><video controls playsinline preload="none" aria-label="${title}" style="display:block;width:100%;max-height:480px;border-radius:8px;background:#080e05"><source src="${src}" type="video/mp4">이 브라우저에서는 영상을 재생할 수 없습니다. <a href="${src}">영상 열기</a></video><figcaption>${title} · <a href="${src}" target="_blank" rel="noopener">새 창에서 보기 ↗</a></figcaption></figure>`).join('') + '</section>';
 }
 const tabs=[...document.querySelectorAll('[data-tab]')];
-function selectTab(tab){if(tab.dataset.tab!=='navigation')document.querySelectorAll('#capture-viewer video').forEach(v=>v.pause());tabs.forEach(t=>{const active=t===tab;t.setAttribute('aria-selected',active);t.tabIndex=active?0:-1;document.getElementById('panel-'+t.dataset.tab).hidden=!active;});}
+function selectTab(tab){if(tab.dataset.tab!=='demo')document.querySelector('#panel-demo video')?.pause();if(tab.dataset.tab!=='navigation')document.querySelectorAll('#capture-viewer video').forEach(v=>v.pause());tabs.forEach(t=>{const active=t===tab;t.setAttribute('aria-selected',active);t.tabIndex=active?0:-1;document.getElementById('panel-'+t.dataset.tab).hidden=!active;});}
 tabs.forEach((tab,i)=>{tab.addEventListener('click',()=>selectTab(tab));tab.addEventListener('keydown',e=>{let n;if(e.key==='ArrowRight')n=(i+1)%tabs.length;else if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;else if(e.key==='Home')n=0;else if(e.key==='End')n=tabs.length-1;else return;e.preventDefault();selectTab(tabs[n]);tabs[n].focus();});});
 document.querySelectorAll('[data-issue]').forEach(b=>b.addEventListener('click',()=>{const after=b.dataset.state==='after';b.parentElement.querySelectorAll('button').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',x===b);});if(b.dataset.issue==='time'){document.getElementById('goal-distance').textContent=after?'3.94':'5.10';const status=document.getElementById('goal-status');status.textContent=after?'도착 범위':'범위 밖';status.classList.toggle('error',!after);document.getElementById('time-caption').textContent=after?'동일 제어 주기의 위치와 시각을 사용하도록 수정했습니다. 허용거리 4cm를 유지하면서 두 판단이 일치했습니다.':'서로 다른 시각의 좌표 변환을 사용해 판단이 엇갈렸습니다. 제어기는 멈추지만 도착 검사는 계속 거절했습니다.';}else{document.getElementById('target-line').setAttribute('stroke',after?'#d5ef7a':'#edbd72');document.getElementById('angle-label').textContent=after?'방향 · 횡오차 · 전방 독립 검사':'연결선 각도 ≠ 차체 각도';document.getElementById('angle-label').setAttribute('fill',after?'#d5ef7a':'#edbd72');document.getElementById('short-caption').textContent=after?'차체 방향·횡오차·전방 여부를 각각 검사했습니다. 기존 목표와 도착 기준을 유지한 SEC12·SEC16 이동 재현이 모두 성공했습니다.':'목표 연결선의 각도를 차체 방향 제한으로 검사했습니다. 9cm 앞 목표에서 허용 횡오차가 약 4.7mm로 좁아지는 모순이 생겼습니다.';}}));
 const dialog=document.getElementById('case-dialog'),lightbox=document.getElementById('lightbox');
@@ -30,3 +30,11 @@ if(e.target.closest('[data-sources]'))openDialog(`<header class="dialog-head"><d
 document.querySelectorAll('dialog').forEach(d=>{d.addEventListener('close',()=>{d.querySelectorAll('video').forEach(v=>v.pause());lock();});d.addEventListener('click',e=>{if(e.target!==d)return;const r=d.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)d.close();});});
 
 document.querySelectorAll('[data-map]').forEach(b=>b.addEventListener('click',()=>{const scope=b.closest('.map-section');scope.querySelectorAll('[data-map]').forEach(x=>{x.classList.toggle('active',x===b);x.setAttribute('aria-pressed',x===b);});const file='assets/farm-route-map'+(b.dataset.map==='all'?'':'-'+b.dataset.map)+'.svg';const zoom=scope.querySelector('.zoom');zoom.dataset.zoom=file;zoom.querySelector('img').src=file;}));
+
+const heroVideo = document.querySelector('.hero-video');
+if (heroVideo) {
+  heroVideo.muted = true;
+  heroVideo.addEventListener('playing', () => heroVideo.classList.add('is-playing'));
+  heroVideo.addEventListener('error', () => heroVideo.classList.remove('is-playing'));
+  heroVideo.play().catch(() => {});
+}
